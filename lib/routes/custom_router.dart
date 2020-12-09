@@ -6,7 +6,7 @@ import 'package:flutter_localization_tst/pages/HomePage.dart';
 import 'package:flutter_localization_tst/pages/NotFoundPage.dart';
 
 class CustomRouter {
-  static Route<dynamic> allRoutes(RouteSettings settings) {
+  static Route<dynamic> generatedRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomePage());

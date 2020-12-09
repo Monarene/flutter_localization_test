@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization_tst/classes/languges.dart';
+import 'package:flutter_localization_tst/localization/language_constants.dart';
 import 'package:flutter_localization_tst/routes/route_namee.dart';
+import 'package:flutter_localization_tst/main.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,29 +20,34 @@ class _HomePageState extends State<HomePage> {
     return Form(
       key: _key,
       child: Column(
-        children: [
+        children: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height / 4,
             child: Center(
               child: Text(
-                "Personnel information",
+                getTranslated(context, 'personal_information'),
+                // DemoLocalization.of(context).translate('personal_information'),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           TextFormField(
             validator: (val) {
               if (val.isEmpty) {
-                return "required field";
+                return getTranslated(context, 'required_field');
+                // return DemoLocalization.of(context).translate('required_fiedl');
               }
-
               return null;
             },
             decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Name",
-                hintText: "Enter Name"),
+              border: OutlineInputBorder(),
+              labelText: getTranslated(context, 'name'),
+              hintText: getTranslated(context, 'name_hint'),
+            ),
           ),
           SizedBox(
             height: 10,
@@ -47,38 +55,31 @@ class _HomePageState extends State<HomePage> {
           TextFormField(
             validator: (val) {
               if (val.isEmpty) {
-                return "required field";
+                return getTranslated(context, 'required_field');
               }
-
               return null;
             },
             decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Email",
-                hintText: "Enter Email Address"),
+              border: OutlineInputBorder(),
+              labelText: getTranslated(context, 'email'),
+              hintText: getTranslated(context, 'email_hint'),
+            ),
           ),
           SizedBox(
             height: 10,
           ),
           TextFormField(
-            validator: (val) {
-              if (val.isEmpty) {
-                return "required field";
-              }
-
-              return null;
-            },
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: "Select Data of birtk",
-                hintText: "Select data of birth"),
+                hintText: getTranslated(context, 'date_of_birth')),
             onTap: () async {
               FocusScope.of(context).requestFocus(FocusNode());
               await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(DateTime.now().year),
-                  lastDate: DateTime(DateTime.now().year + 20));
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(DateTime.now().year),
+                lastDate: DateTime(DateTime.now().year + 20),
+              );
             },
           ),
           SizedBox(
@@ -95,7 +96,7 @@ class _HomePageState extends State<HomePage> {
             color: Theme.of(context).primaryColor,
             child: Center(
               child: Text(
-                'Submit information',
+                getTranslated(context, 'submit_info'),
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
@@ -154,29 +155,56 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _changeLanguage(Language language) async {
+    Locale _locale = await setLocale(language.languageCode);
+    MyApp.setLocale(context, _locale);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: _drawerList(),
-        appBar: AppBar(
-          actions: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: DropdownButton(
-                underline: SizedBox(),
-                icon: Icon(
-                  Icons.language,
-                  color: Colors.white,
-                ),
-                items: [],
+      appBar: AppBar(
+        title: Text(getTranslated(context, 'home_page')),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DropdownButton<Language>(
+              underline: SizedBox(),
+              icon: Icon(
+                Icons.language,
+                color: Colors.white,
               ),
-            )
-          ],
-          title: Text("Home Page"),
-        ),
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: _mainForm(context),
-        ));
+              onChanged: (Language language) {
+                _changeLanguage(language);
+              },
+              items: Language.languageList()
+                  .map<DropdownMenuItem<Language>>(
+                    (e) => DropdownMenuItem<Language>(
+                      value: e,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Text(
+                            e.flag,
+                            style: TextStyle(fontSize: 30),
+                          ),
+                          Text(e.name)
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: _drawerList(),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        child: _mainForm(context),
+      ),
+    );
   }
 }
