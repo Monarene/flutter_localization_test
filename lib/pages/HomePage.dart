@@ -159,6 +159,19 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         drawer: _drawerList(),
         appBar: AppBar(
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: DropdownButton(
+                underline: SizedBox(),
+                icon: Icon(
+                  Icons.language,
+                  color: Colors.white,
+                ),
+                items: [],
+              ),
+            )
+          ],
           title: Text("Home Page"),
         ),
         body: Container(
