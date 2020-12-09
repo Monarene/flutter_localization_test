@@ -7,6 +7,104 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var _key = GlobalKey<FormState>();
+
+  void _showSuccessDialog() {
+    showTimePicker(context: context, initialTime: TimeOfDay.now());
+  }
+
+  Form _mainForm(BuildContext context) {
+    return Form(
+      key: _key,
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height / 4,
+            child: Center(
+              child: Text(
+                "Personnel information",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          TextFormField(
+            validator: (val) {
+              if (val.isEmpty) {
+                return "required field";
+              }
+
+              return null;
+            },
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Name",
+                hintText: "Enter Name"),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            validator: (val) {
+              if (val.isEmpty) {
+                return "required field";
+              }
+
+              return null;
+            },
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Email",
+                hintText: "Enter Email Address"),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            validator: (val) {
+              if (val.isEmpty) {
+                return "required field";
+              }
+
+              return null;
+            },
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Select Data of birtk",
+                hintText: "Select data of birth"),
+            onTap: () async {
+              FocusScope.of(context).requestFocus(FocusNode());
+              await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(DateTime.now().year),
+                  lastDate: DateTime(DateTime.now().year + 20));
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          MaterialButton(
+            onPressed: () {
+              if (_key.currentState.validate()) {
+                _showSuccessDialog();
+              }
+            },
+            height: 50,
+            shape: StadiumBorder(),
+            color: Theme.of(context).primaryColor,
+            child: Center(
+              child: Text(
+                'Submit information',
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Container _drawerList() {
     TextStyle _textStyle = TextStyle(color: Colors.white);
 
@@ -39,7 +137,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: Icon(
               Icons.settings,
-              color: Colors.blue,
+              color: Colors.white,
               size: 30,
             ),
             title: Text(
@@ -59,19 +157,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: _drawerList(),
-      appBar: AppBar(
-        title: Text("Home Page"),
-      ),
-      body: Container(
-        child: MaterialButton(
-          color: Colors.blue,
-          child: Text("Navigate to about page"),
-          onPressed: () {
-            Navigator.pushNamed(context, aboutRoute);
-          },
+        drawer: _drawerList(),
+        appBar: AppBar(
+          title: Text("Home Page"),
         ),
-      ),
-    );
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          child: _mainForm(context),
+        ));
   }
 }
